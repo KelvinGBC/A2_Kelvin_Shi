@@ -1,15 +1,21 @@
 package com.example.a2_kelvin_shi
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
+import com.example.a2_kelvin_shi.databinding.ActivityAboutBinding
 
-class AboutFragment : Fragment() {
+class AboutActivity : AppCompatActivity() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_about, container, false)
+    private lateinit var binding: ActivityAboutBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
     }
 }
