@@ -1,10 +1,10 @@
 package com.example.a2_kelvin_shi
 
-import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)   // IMPORTANT
+        setContentView(R.layout.activity_main)
 
         etBase = findViewById(R.id.etBase)
         etDest = findViewById(R.id.etDest)
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         val errorMsg = validateInputs(base, dest, amountStr)
         if (errorMsg != null) {
-            showToast(errorMsg)
+            Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
             return
         }
 
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     progress.visibility = View.GONE
                     btnConvert.isEnabled = true
-                    showToast("Network error: ${e.message}")
+                    Toast.makeText(this@MainActivity, "Network error: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (!response.isSuccessful) {
                     runOnUiThread {
-                        showToast("API error: ${response.code}")
+                        Toast.makeText(this@MainActivity, "API error: ${response.code}", Toast.LENGTH_LONG).show()
                     }
                     return
                 }
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (!json.has("data")) {
                     runOnUiThread {
-                        showToast("Missing currency")
+                        Toast.makeText(this@MainActivity, "Missing currency", Toast.LENGTH_LONG).show()
                     }
                     return
                 }
@@ -118,9 +118,5 @@ class MainActivity : AppCompatActivity() {
         if (a.isEmpty()) return "Amount required"
         if (a.toDoubleOrNull() == null || a.toDouble() <= 0.0) return "Invalid amount"
         return null
-    }
-
-    private fun showToast(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
     }
 }
