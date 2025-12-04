@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">A2_Kelvin_Shi</string>
+    <string name="title_activity_about">AboutActivity</string>
 </resources>
