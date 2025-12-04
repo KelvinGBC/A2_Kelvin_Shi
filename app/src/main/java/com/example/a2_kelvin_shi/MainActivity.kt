@@ -1,16 +1,16 @@
 package com.example.a2_kelvin_shi
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.View
 import android.widget.*
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.appcompat.app.AppCompatActivity
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 import java.util.regex.Pattern
 
-class MainFragment : Fragment() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var etBase: EditText
     private lateinit var etDest: EditText
@@ -23,27 +23,24 @@ class MainFragment : Fragment() {
 
     private val API_KEY = "fca_live_pfNc8LrSA99Kp8d1pbct7vFbRFmBynBPh1WoSMM4"
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_main, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)   // IMPORTANT
 
-        etBase = view.findViewById(R.id.etBase)
-        etDest = view.findViewById(R.id.etDest)
-        etAmount = view.findViewById(R.id.etAmount)
-        btnConvert = view.findViewById(R.id.btnConvert)
-        progress = view.findViewById(R.id.progress)
-        tvRate = view.findViewById(R.id.tvRate)
-        tvResult = view.findViewById(R.id.tvResult)
-        btnAbout = view.findViewById(R.id.btnAbout)
+        etBase = findViewById(R.id.etBase)
+        etDest = findViewById(R.id.etDest)
+        etAmount = findViewById(R.id.etAmount)
+        btnConvert = findViewById(R.id.btnConvert)
+        progress = findViewById(R.id.progress)
+        tvRate = findViewById(R.id.tvRate)
+        tvResult = findViewById(R.id.tvResult)
+        btnAbout = findViewById(R.id.btnAbout)
 
         btnConvert.setOnClickListener { performConversion() }
-        btnAbout.setOnClickListener {
-            findNavController().navigate(R.id.aboutFragment)
-        }
 
-        return view
+        btnAbout.setOnClickListener {
+            startActivity(Intent(this, AboutActivity::class.java))
+        }
     }
 
     private fun performConversion() {
@@ -73,7 +70,7 @@ class MainFragment : Fragment() {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                activity?.runOnUiThread {
+                runOnUiThread {
                     progress.visibility = View.GONE
                     btnConvert.isEnabled = true
                     showToast("Network error: ${e.message}")
@@ -81,13 +78,13 @@ class MainFragment : Fragment() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                activity?.runOnUiThread {
+                runOnUiThread {
                     progress.visibility = View.GONE
                     btnConvert.isEnabled = true
                 }
 
                 if (!response.isSuccessful) {
-                    activity?.runOnUiThread {
+                    runOnUiThread {
                         showToast("API error: ${response.code}")
                     }
                     return
@@ -97,7 +94,7 @@ class MainFragment : Fragment() {
                 val json = JSONObject(data)
 
                 if (!json.has("data")) {
-                    activity?.runOnUiThread {
+                    runOnUiThread {
                         showToast("Missing currency")
                     }
                     return
@@ -106,7 +103,7 @@ class MainFragment : Fragment() {
                 val rate = json.getJSONObject("data").getDouble(dest)
                 val converted = rate * amount
 
-                activity?.runOnUiThread {
+                runOnUiThread {
                     tvRate.text = "1 $base = $rate $dest"
                     tvResult.text = "$amount $base = $converted $dest"
                 }
@@ -115,7 +112,7 @@ class MainFragment : Fragment() {
     }
 
     private fun validateInputs(b: String, d: String, a: String): String? {
-        val pattern = Pattern.compile("^[A-Z]{3}\$")
+        val pattern = Pattern.compile("^[A-Z]{3}$")
         if (!pattern.matcher(b).matches()) return "Base currency invalid"
         if (!pattern.matcher(d).matches()) return "Destination currency invalid"
         if (a.isEmpty()) return "Amount required"
@@ -124,6 +121,6 @@ class MainFragment : Fragment() {
     }
 
     private fun showToast(msg: String) {
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
     }
 }
