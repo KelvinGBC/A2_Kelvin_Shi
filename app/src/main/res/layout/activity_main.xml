@@ -9,12 +9,12 @@
         android:layout_height="wrap_content">
         <EditText
             android:id="@+id/etBase"
-            android:hint="Base Currency (e.g. USD)"
+            android:hint="Base Currency"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <EditText
             android:id="@+id/etDest"
-            android:hint="Destination Currency (e.g. CAD)"
+            android:hint="Destination Currency"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <EditText
